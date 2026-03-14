@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fix-It Forward Shop</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+    <!-- Header -->
     <header class="site-header">
         <a href="#" class="logo" aria-label="Fix It Forward Home">
             Fix-It <span>Forward</span>
@@ -28,6 +31,7 @@
         </button>
     </header>
 
+    <!-- Hero Section -->
     <main>
         <section id="hero" class="hero" aria-labelledby="hero-title">
             <div class="hero__content">
@@ -40,7 +44,7 @@
                     Start Shopping
                 </button>
             </div>
-            <div class="hero__highlight" aria-hidden="true">
+            <div class="hero__highlight hero__highlight--glow" aria-hidden="true">
                 <p>Today only: Shipping might or might not work.</p>
             </div>
         </section>
@@ -70,9 +74,10 @@
             </header>
 
             <div class="catalog__grid" id="product-grid">
-                <!-- Products are rendered from JS. Intentionally left blank. -->
+            
             </div>
 
+            
             <template id="product-card-template">
                 <article class="product" data-product-id="">
                     <button class="product__favorite" aria-pressed="false" aria-label="Save product">
@@ -108,7 +113,7 @@
             </template>
         </section>
 
-        <aside id="cart-panel" class="cart" aria-label="Shopping cart" aria-live="polite">
+        <aside id="cart-panel" class="cart cart--hidden" aria-label="Shopping cart" aria-live="polite">
             <header class="cart__header">
                 <h2>Cart</h2>
                 <button class="cart__close" data-close-cart="true" aria-label="Close cart">
@@ -117,7 +122,7 @@
             </header>
             <div class="cart__body">
                 <ul class="cart__items" id="cart-items">
-                    <!-- Populated by JS -->
+                    
                 </ul>
                 <p class="cart__empty" id="cart-empty-msg">Your cart is currently empty.</p>
             </div>
@@ -144,9 +149,11 @@
         </aside>
     </main>
 
-    <footer id="footer" class="site-footer">
+    <footer id="footer" class="site-footer site-footer--silver">
         <p>© <span id="footer-year">2023</span> Fix-It Forward. All rights maybe reserved.</p>
         <p class="site-footer__note">This is a demo store. Nothing you order will actually ship.</p>
     </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>

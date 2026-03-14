@@ -92,3 +92,60 @@ function updateCartUI(){
   cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
   cartCountEl.textContent = cart.reduce((acc, i)=>acc+i.qty,0);
 }
+function updateCartUI(){
+  cartItemsEl.innerHTML = "";
+  if(cart.length === 0){
+    document.getElementById("cart-empty-msg").style.display = "block";
+  } else {
+    document.getElementById("cart-empty-msg").style.display = "none";
+  }
+  let subtotal = 0;
+  cart.forEach(item => {
+    const li = document.createElement("li");
+    li.classList.add("cart__item");
+    li.innerHTML = `
+      <span class="cart__item-title">${item.title} x ${item.qty}</span>
+      <span class="cart__item-meta">$${(item.price*item.qty).toFixed(2)}</span>
+    `;
+    cartItemsEl.appendChild(li);
+    subtotal += item.price*item.qty;
+  });
+  const tax = subtotal*0.05;
+  cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  document.getElementById("cart-tax").textContent = `$${tax.toFixed(2)}`;
+  document.getElementById("cart-total").textContent = `$${(subtotal+tax).toFixed(2)}`;
+  cartCountEl.textContent = cart.reduce((acc, i)=>acc+i.qty,0);
+}
+const checkoutBtn = document.getElementById("checkout-btn");
+checkoutBtn.addEventListener("click", ()=>{
+  if(cart.length === 0) return;
+  alert("Order placed! Thank you!");
+  cart = [];
+  updateCartUI();
+});
+
+// Enable checkout button when items exist
+function updateCartUI(){
+  checkoutBtn.disabled = cart.length === 0;
+}
+const searchInput = document.getElementById("search-input");
+searchInput.addEventListener("input", (e)=>{
+  const query = e.target.value.toLowerCase();
+  const filtered = products.filter(p=>p.title.toLowerCase().includes(query));
+  renderProducts(filtered);
+});
+const sortSelect = document.getElementById("sort-select");
+sortSelect.addEventListener("change", (e)=>{
+  const val = e.target.value;
+  let sorted = [...products];
+  if(val==="price-asc") sorted.sort((a,b)=>a.price-b.price);
+  if(val==="price-desc") sorted.sort((a,b)=>b.price-a.price);
+  renderProducts(sorted);
+});
+const navToggle = document.querySelector(".nav__toggle");
+const navList = document.querySelector(".nav__list");
+navToggle.addEventListener("click", ()=>{
+  const expanded = navToggle.getAttribute("aria-expanded")==="true";
+  navToggle.setAttribute("aria-expanded", !expanded);
+  navList.style.display = expanded?"none":"flex";
+});
