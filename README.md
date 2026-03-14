@@ -1,6 +1,7 @@
 # Fix-It Forward: Broken Store Challenge
 # BYTEBAZAAR | Glow Tech Beauty
 Empowering the next generation of beauty through immersive commerce.
+
 ByteBazaar is a futuristic, high-performance e-commerce platform built for the Fix-It Forward Challenge. The website contains aesthetics and seamless user functionality, featuring an automated Eid discount system and an AI-driven concierge.
 ---
 
@@ -41,12 +42,39 @@ Immersive Micro-interactions:
 *Unique ID Conflict:* Replaced standard array indexing with a Date.now() + Math.random() generator for cart items to prevent multiple items from being deleted simultaneously when clicked.
 
 # 🚀 Setup & Installation
-*Fork the Repository:* Use the "Fork" button on GitHub to create your own copy.
+1. Fork & Clone
+The project began by forking the original repository to establish a clear, independent commit history for the hackathon.
 
-*Clone the Project:*
+# Clone your forked repository
+git clone https://github.com/[JoannaAldrin]/byte-bazaar.git
 
-Bash
-git clone https://github.com/[your-username]/bytebazaar.git
-No Dependencies Required: This project uses pure Vanilla JS. You do not need to run npm install.
+# Enter the directory
+cd byte-bazaar
 
-Live Server: Open index.html in your browser. (Recommended: Use the "Live Server" extension in VS Code for the best experience).
+2. Environment Cleaning
+To ensure a "Clean-working code" environment:
+
+*Removed legacy CSS:* Stripped out redundant styles to reduce the CSS footprint.
+
+*Refactored Logic:* Transitioned from hard-coded product lists to a dynamic rendering engine in app.js.
+
+*Asset Optimization:* Verified all image paths and video embeds were using secure HTTPS protocols for deployment readiness.
+
+3. Local Development Fixes
+To run the environment exactly as it was developed:
+
+Open the folder in VS Code.
+
+Launch via Live Server to test the IntersectionObserver animations and the responsive Cart Drawer.
+
+No external libraries or npm packages are required—the project runs on a zero-dependency Vanilla JS stack for maximum speed.
+
+4. Vercel Production Deployment
+The final stage of the setup was the production build:
+
+*Configuration:* The project was linked to Vercel via GitHub for Continuous Integration (CI).
+
+*Fix verification:* The "Checkout Button Overflow" fix was tested specifically on the live Vercel build to ensure mobile responsiveness across all devices.
+
+Developed By
+Joanna Aldrin & Sandra Aldrin
