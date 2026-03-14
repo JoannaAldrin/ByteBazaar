@@ -10,7 +10,7 @@ const products = [
     { id: 9, name: "Pixel Primer", price: 25.00, image: "https://images.unsplash.com/photo-1623882150544-6e55b195a115?q=80&w=765&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
     { id: 10, name: "Holo Brow Gel", price: 29.00, image: "https://images.unsplash.com/photo-1635868388874-865b8d592253?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
     { id: 11, name: "Flawless Foundation", price: 50.00, image: "https://images.unsplash.com/photo-1557205465-f3762edea6d3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-    { id: 12, name: "Eclipse Eyeliner", price: 27.00, image: "https://images.unsplash.com/photo-1631237535134-e009a5939d9c?q=80&w=1025&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }          
+    { id: 12, name: "Eclipse Eyeliner", price: 27.00, image: "https://images.unsplash.com/photo-1631237535134-e009a5939d9c?q=80&w=1025&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }           
 ];
 
 let cart = [];
@@ -40,15 +40,21 @@ function renderProducts() {
 }
 
 function addToCart(product, discountedPrice) {
-    cart.push({ ...product, price: parseFloat(discountedPrice) });
+
+    cart.push({ ...product, price: parseFloat(discountedPrice), cartId: Date.now() + Math.random() });
     updateCartUI();
     document.getElementById('cart-panel').classList.remove('cart--hidden');
     
-const bag = document.querySelector('.header-cart');
-bag.style.transform = "scale(1.2)";
-setTimeout(() => {
-    bag.style.transform = "scale(1)";
-}, 200);
+    const bag = document.querySelector('.header-cart');
+    bag.style.transform = "scale(1.2)";
+    setTimeout(() => {
+        bag.style.transform = "scale(1)";
+    }, 200);
+}
+
+function removeFromCart(cartId) {
+    cart = cart.filter(item => item.cartId !== cartId);
+    updateCartUI();
 }
 
 function updateCartUI() {
@@ -62,8 +68,16 @@ function updateCartUI() {
     cart.forEach(item => {
         total += item.price;
         const li = document.createElement('li');
-        li.style.cssText = "display:flex; justify-content:space-between; margin-bottom:15px; font-size:0.9rem;";
-        li.innerHTML = `<span>${item.name}</span> <b>$${item.price.toFixed(2)}</b>`;
+        li.style.cssText = "display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; font-size:0.9rem;";
+        
+        
+        li.innerHTML = `
+            <span>${item.name}</span> 
+            <div>
+                <b style="margin-right: 10px;">$${item.price.toFixed(2)}</b>
+                <button onclick="removeFromCart(${item.cartId})" style="background:none; border:none; color:#ff4d6d; cursor:pointer; font-weight:bold; padding:0 5px;">×</button>
+            </div>
+        `;
         list.appendChild(li);
     });
 
@@ -71,20 +85,15 @@ function updateCartUI() {
     countDisplay.textContent = cart.length;
     document.getElementById('checkout-btn').disabled = cart.length === 0;
     document.getElementById('cart-empty-msg').style.display = cart.length ? 'none' : 'block';
+    
     document.getElementById('checkout-btn').onclick = () => {
-   
-    alert("Eid Mubarak! Your order is placed. ✨");
-    
-    
-    throwConfetti();
-    
-   
-    cart = [];
-    updateCartUI();
-    document.getElementById('cart-panel').classList.add('cart--hidden');
-};
-
-    }
+        alert("Eid Mubarak! Your order is placed. ✨");
+        throwConfetti();
+        cart = [];
+        updateCartUI();
+        document.getElementById('cart-panel').classList.add('cart--hidden');
+    };
+}
 
 function setupChatBot() {
     const chat = document.getElementById('ai-chat');
@@ -127,47 +136,58 @@ function setupCoreListeners() {
     document.getElementById('explore-btn').onclick = () => document.getElementById('catalog').scrollIntoView({behavior: 'smooth'});
     document.getElementById('footer-year').textContent = new Date().getFullYear();
    
-const modal = document.getElementById('welcome-modal');
-const modalBtn = document.getElementById('close-modal-btn');
+    const modal = document.getElementById('welcome-modal');
+    const modalBtn = document.getElementById('close-modal-btn');
 
-if (modalBtn) {
-    modalBtn.onclick = () => {
-       
-        modal.style.transition = "opacity 0.5s ease";
-        modal.style.opacity = "0";
-        
-       
-        setTimeout(() => {
-            modal.style.display = "none";
-        }, 500);
-    };
+    if (modalBtn) {
+        modalBtn.onclick = () => {
+            modal.style.transition = "opacity 0.5s ease";
+            modal.style.opacity = "0";
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 500);
+        };
+    }
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.product').forEach(p => observer.observe(p));
+
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.onsubmit = (e) => {
+            e.preventDefault();
+            const btn = newsletterForm.querySelector('button');
+            const originalText = btn.textContent;
+            
+            btn.textContent = "JOINED! ✨";
+            btn.disabled = true;
+            newsletterForm.querySelector('input').value = ""; // Clear input
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 3000);
+        };
+    }
 }
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-        }
-    });
-}, { threshold: 0.1 });
 
-
-document.querySelectorAll('.product').forEach(p => observer.observe(p));
-
-const newsletterForm = document.getElementById('newsletter-form');
-if (newsletterForm) {
-    newsletterForm.onsubmit = (e) => {
-        e.preventDefault();
-        const btn = newsletterForm.querySelector('button');
-        const originalText = btn.textContent;
-        
-        btn.textContent = "JOINED! ✨";
-        btn.disabled = true;
-        newsletterForm.querySelector('input').value = ""; // Clear input
-
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.disabled = false;
-        }, 3000);
-    };
-}
+function throwConfetti() {
+    const colors = ['#ffb7c5', '#ffffff', '#000000'];
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+        confetti.style.opacity = Math.random();
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+    }
 }
